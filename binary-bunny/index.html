@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二进制兔子🐰</title>
+</head>
+<body>
+  <form >
+    上传本地图片
+    <input type="file" id="file" name="file">
+  </form>
+  <canvas width="500" height="344" id="bunny"></canvas>
+
+  <script src="./main.js"></script>
+  <script>
+    window.onload = function() {
+      console.log('1---------')
+      const bunny = document.getElementById('bunny');
+      const ctx = bunny.getContext('2d');
+      const file = document.getElementById('file');
+      file.onchange = function() {
+        const reader = new FileReader();
+        reader.readAsDataURL(this.files[0]);
+        reader.onload = function() {
+          const img = new Image();
+          img.src = reader.result;
+          img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+            const data = ctx.getImageData(0, 0, 500, 344);
+            if (data && data.data && data.data.length) {
+              for (let i = 0; i < data.data.length; i += 4) {
+                if (data.data[i] > 190 && data.data[i + 1] > 190 && data.data[i + 2] > 190){
+                  continue;
+                } else {
+                  data.data[i] = 0;
+                  data.data[i + 1] = 0;
+                  data.data[i + 2] = 0;
+                  data.data[i + 3] = 0;
+                }
+              }
+            }
+            console.log('data.data----', data);
+            ctx.putImageData(data, 0, 0);
+          }
+        }
+      }
+    };
+  </script>
+</body>
+</html>
